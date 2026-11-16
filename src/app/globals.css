@@ -1,0 +1,231 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  --nav-height: 59px;
+  --page-gutter: clamp(16px, 6vw, 48px);
+  --black: #070d14;
+  --white: #f9f4ef;
+  --accent: #5bd8ff;
+  --muted: #b6c6d0;
+  --line: #263841;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-height) + 10px); }
+body { margin: 0; background: var(--black); color: var(--white); font-family: "Helvetica Neue", Arial, sans-serif; }
+.wrap { width: min(1280px, calc(100% - var(--page-gutter) * 2)); margin-inline: auto; }
+a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.skip { position: fixed; z-index: 9; top: 10px; left: 12px; background: var(--white); color: var(--black); padding: 10px 18px; transform: translateY(-160%); }
+.skip:focus { transform: none; }
+.drive { --drive: 0; position: relative; min-height: 220svh; background: #071019; }
+.drive-stage {
+  position: sticky;
+  top: var(--nav-height);
+  height: calc(100svh - var(--nav-height));
+  min-height: 380px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  isolation: isolate;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 61%, #125e84 0%, #102e45 36%, #071019 70%);
+}
+.drive-grid {
+  position: absolute;
+  left: -40%;
+  right: -40%;
+  bottom: -28%;
+  height: 75%;
+  transform: perspective(300px) rotateX(48deg);
+  background-image: linear-gradient(#58cfff25 1px, transparent 1px), linear-gradient(90deg, #58cfff25 1px, transparent 1px);
+  background-size: 64px 56px;
+  mask-image: linear-gradient(transparent, black 50%);
+  pointer-events: none;
+}
+.drive-heading { position: relative; z-index: 1; text-align: center; padding: clamp(85px, 13svh, 140px) 16px 0; }
+.drive-heading p {
+  margin: 0 0 12px;
+  color: #d8f3ff;
+  font: 700 clamp(.65rem, 1vw, .85rem)/1.5 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+.drive-heading h1 {
+  margin: 0;
+  font-size: clamp(4.4rem, 18.5vw, 16rem);
+  line-height: .79;
+  letter-spacing: -.095em;
+  font-weight: 900;
+  color: #eaf8ff;
+  opacity: calc(1 - var(--drive) * .67);
+  transform: translateY(calc(var(--drive) * -38px));
+}
+.drive-heading h1 span { color: #56d4fc; }
+.car-frame {
+  position: absolute;
+  z-index: 2;
+  top: 58%;
+  left: 50%;
+  width: min(74vw, 1020px, 108svh);
+  transform: translate(-50%, -42%) perspective(1000px)
+    translateY(calc(var(--drive) * 65px))
+    rotateX(calc(var(--drive) * 10deg))
+    scale(calc(.86 + var(--drive) * .96));
+  mask-image: radial-gradient(ellipse 71% 72%, #000 64%, transparent 100%);
+  pointer-events: none;
+}
+.car-frame img { display: block; width: 100%; height: auto; filter: drop-shadow(0 28px 28px #000b); }
+.car-headlight-trigger {
+  position: relative;
+  display: block;
+  width: 100%;
+  cursor: default;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+.car-headlight-trigger:focus-visible { outline-offset: -5px; }
+.car-headlight-flash {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(ellipse 10% 9% at 23% 58%, #fff 0% 38%, #eefbff 54%, #a6ebffcc 73%, transparent 100%),
+    radial-gradient(ellipse 10% 9% at 79% 58%, #fff 0% 38%, #eefbff 54%, #a6ebffcc 73%, transparent 100%),
+    radial-gradient(ellipse 25% 23% at 23% 58%, #c1efffe6, #70d6ff80 38%, transparent 86%),
+    radial-gradient(ellipse 25% 23% at 79% 58%, #c1efffe6, #70d6ff80 38%, transparent 86%);
+  animation: car-high-beam 610ms linear;
+}
+@keyframes car-high-beam {
+  0%, 100% { opacity: 0; }
+  7%, 28%, 46%, 67% { opacity: var(--beam-intensity, 1); }
+  40%, 87% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .car-headlight-flash { --beam-intensity: .45; }
+}
+.drive-caption {
+  grid-row: 3;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  border-top: 1px solid #7cd4ff60;
+  padding: 12px clamp(16px, 4vw, 48px) 23px;
+  background: linear-gradient(transparent,#071019e8);
+}
+.drive-caption p { margin: 0; font: .75rem/1.5 var(--mono); }
+.drive-caption a { display: inline-flex; align-items: center; min-height: 44px; gap: 17px; padding-inline: 12px; background: #74dcff; color: #07121c; font: 700 .75rem var(--mono); white-space: nowrap; }
+.drive-caption a:hover { background: white; }
+.drive-progress { position: absolute; z-index: 3; bottom: 0; left: 0; width: 100%; height: 3px; background: #5bd8ff; transform: scaleX(var(--drive)); transform-origin: left; }
+@media(max-width: 760px) {
+  .drive { min-height: 165svh; }
+  .drive-heading { padding-top: clamp(44px, 13svh, 110px); }
+  .car-frame {
+    width: min(96vw, 580px, 94svh);
+    top: 54%;
+    transform: translate(-50%, -42%) translateY(calc(var(--drive) * 18px))
+      scale(calc(.92 + var(--drive) * .5));
+  }
+  .drive-caption { gap: 12px; padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+  .drive-caption p { font-size: .65rem; }
+}
+@media(prefers-reduced-motion: reduce) {
+  .drive { min-height: 0; }
+  .drive-stage { position: relative; }
+  .drive-progress { display: none; }
+}
+
+.garage-nav { position: sticky; top: 0; z-index: 5; background: #071019; border-bottom: 1px solid var(--line); }
+.garage-nav .wrap, .garage-footer { min-height: 58px; display: flex; align-items: center; justify-content: space-between; font: 700 .82rem var(--mono); }
+.garage-nav nav { display: flex; gap: clamp(16px, 4vw, 40px); }
+.garage-nav span, h2 span, a:hover { color: var(--accent); }
+.garage-section { padding-block: clamp(50px, 8vw, 110px); }
+.garage-section + .garage-section, .garage-footer { border-top: 1px solid var(--line); }
+.garage-section h2 { margin: 0 0 26px; font-size: clamp(2.6rem, 8vw, 7rem); line-height: 1; letter-spacing: -.075em; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.section-intro { margin-bottom: clamp(34px, 6vw, 80px); }
+.section-intro h2, .build-copy h3 { margin: 0; font-weight: 720; line-height: 1; letter-spacing: -.065em; text-wrap: balance; }
+.garage-section .section-intro h2 { margin: 0; font-size: clamp(2.25rem, 8vw, 6rem); }
+.build-story { display: grid; gap: clamp(64px, 12vw, 156px); }
+.build-chapter { display: grid; grid-template-columns: minmax(0, .72fr) minmax(0, 1fr); align-items: center; gap: clamp(30px, 8vw, 106px); }
+.build-chapter:nth-child(even) { grid-template-columns: minmax(0, 1fr) minmax(0, .72fr); }
+.build-chapter:nth-child(even) .build-visual { grid-area: 1 / 1; }
+.build-copy h3 { max-width: 16ch; font-size: clamp(2rem, 4.2vw, 4.25rem); }
+.build-copy p, .build-copy time { display: block; margin: 16px 0 0; max-width: 34ch; color: var(--muted); font-size: clamp(1rem, 1.6vw, 1.2rem); line-height: 1.5; }
+.build-visual { margin: 0; }
+.build-image, .build-visual video { position: relative; width: 100%; aspect-ratio: 5 / 5.5; max-height: 690px; overflow: hidden; border-radius: 28px; background: #0f1820; }
+.build-image img { object-fit: cover; object-position: center 55%; }
+#front-lip .build-image img { object-position: center 64%; }
+#escapamento .build-image img { object-position: center 68%; }
+.build-visual video { object-fit: contain; }
+.build-visual figcaption { padding-top: 10px; color: var(--muted); font-size: .85rem; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .build-image { view-timeline-name: --chapter; }
+    .build-image img { animation: chapter-camera linear both; animation-timeline: --chapter; animation-range: entry 0% cover 52%; }
+    @keyframes chapter-camera { from { transform: scale(1.1); } to { transform: scale(1); } }
+  }
+}
+
+@media (max-width: 760px) {
+  .build-chapter, .build-chapter:nth-child(even) { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .build-chapter:nth-child(even) .build-visual { grid-area: auto; }
+  .build-image, .build-visual video { border-radius: 20px; }
+  .build-image { aspect-ratio: 4 / 5; max-height: none; }
+}
+
+.build-section {
+  display: grid;
+  isolation: isolate;
+  background: var(--black);
+}
+.build-backdrop, .build-content { grid-area: 1 / 1; }
+.build-content { z-index: 1; text-shadow: 0 1px 8px #070d14; }
+.build-backdrop {
+  position: sticky;
+  top: var(--nav-height);
+  align-self: start;
+  height: calc(100svh - var(--nav-height));
+}
+.dinoco-loop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 57%;
+  filter: brightness(1.25);
+}
+.build-backdrop::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(90deg, #070d14bd, #070d1438 50%, #070d14bd),
+    linear-gradient(0deg, #070d14, transparent 24%, transparent 80%, #070d14);
+  pointer-events: none;
+}
+
+
+@media (max-width: 380px) {
+  :root { --page-gutter: 14px; }
+  .drive-heading h1 { font-size: clamp(3.1rem, 18.5vw, 4.4rem); }
+  .drive-caption a { gap: 8px; }
+  .garage-footer { flex-wrap: wrap; gap: 8px 16px; padding-block: 14px; }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .drive { min-height: 0; }
+  .drive-stage { position: relative; top: auto; min-height: 300px; }
+  .drive-heading { padding-top: 18px; }
+  .drive-heading h1 { font-size: min(13vw, 18svh); }
+  .car-frame {
+    top: 49%;
+    width: min(70vw, 87svh);
+    transform: translate(-50%, -30%);
+  }
+  .drive-caption { padding-block: 6px; }
+  .drive-progress { display: none; }
+}
