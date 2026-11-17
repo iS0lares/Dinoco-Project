@@ -17,8 +17,9 @@ body { margin: 0; background: var(--black); color: var(--white); font-family: "H
 a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 .skip { position: fixed; z-index: 9; top: 10px; left: 12px; background: var(--white); color: var(--black); padding: 10px 18px; transform: translateY(-160%); }
 .skip:focus { transform: none; }
-.drive { --drive: 0; position: relative; min-height: 220svh; background: #071019; }
+.drive { --drive: 0; position: relative; min-height: 176svh; background: #071019; }
 .drive-stage {
+  --hero-car-width: min(80vw, 1040px, 108svh);
   position: sticky;
   top: var(--nav-height);
   height: calc(100svh - var(--nav-height));
@@ -41,7 +42,17 @@ a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline
   mask-image: linear-gradient(transparent, black 50%);
   pointer-events: none;
 }
-.drive-heading { position: relative; z-index: 1; text-align: center; padding: clamp(85px, 13svh, 140px) 16px 0; }
+.drive-heading {
+  position: absolute;
+  z-index: 1;
+  inset-inline: 0;
+  top: calc(52% - var(--hero-car-width) * .23);
+  padding-inline: 16px;
+  text-align: center;
+  transform: translateY(calc(-67% - var(--drive) * clamp(64px, 13svh, 130px)));
+  opacity: clamp(0, calc(1 - var(--drive) * 1.55), 1);
+  pointer-events: none;
+}
 .drive-heading p {
   margin: 0 0 12px;
   color: #d8f3ff;
@@ -56,20 +67,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline
   letter-spacing: -.095em;
   font-weight: 900;
   color: #eaf8ff;
-  opacity: calc(1 - var(--drive) * .67);
-  transform: translateY(calc(var(--drive) * -38px));
 }
 .drive-heading h1 span { color: #56d4fc; }
 .car-frame {
   position: absolute;
   z-index: 2;
-  top: 58%;
+  top: 52%;
   left: 50%;
-  width: min(74vw, 1020px, 108svh);
-  transform: translate(-50%, -42%) perspective(1000px)
-    translateY(calc(var(--drive) * 65px))
-    rotateX(calc(var(--drive) * 10deg))
-    scale(calc(.86 + var(--drive) * .96));
+  width: var(--hero-car-width);
+  transform: translate(-50%, -50%)
+    scale(calc(.92 + var(--drive) * .13));
   mask-image: radial-gradient(ellipse 71% 72%, #000 64%, transparent 100%);
   pointer-events: none;
 }
@@ -120,14 +127,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline
 .drive-caption a:hover { background: white; }
 .drive-progress { position: absolute; z-index: 3; bottom: 0; left: 0; width: 100%; height: 3px; background: #5bd8ff; transform: scaleX(var(--drive)); transform-origin: left; }
 @media(max-width: 760px) {
-  .drive { min-height: 165svh; }
-  .drive-heading { padding-top: clamp(44px, 13svh, 110px); }
-  .car-frame {
-    width: min(96vw, 580px, 94svh);
-    top: 54%;
-    transform: translate(-50%, -42%) translateY(calc(var(--drive) * 18px))
-      scale(calc(.92 + var(--drive) * .5));
-  }
+  .drive { min-height: 155svh; }
+  .drive-stage { --hero-car-width: min(100vw, 580px, 94svh); }
   .drive-caption { gap: 12px; padding-bottom: max(14px, env(safe-area-inset-bottom)); }
   .drive-caption p { font-size: .65rem; }
 }
@@ -158,14 +159,36 @@ a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline
 .build-visual { margin: 0; }
 .build-image, .build-visual video { position: relative; width: 100%; aspect-ratio: 5 / 5.5; max-height: 690px; overflow: hidden; border-radius: 28px; background: #0f1820; }
 .build-image img { object-fit: cover; object-position: center 55%; }
-#front-lip .build-image img { object-position: center 64%; }
+.detail-photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.detail-photo-line {
+  fill: none;
+  stroke: #a3edff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 5px #23baff) drop-shadow(0 0 10px #23baff);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .detail-photo[data-highlighted="true"] .detail-photo-line {
+    animation: trace-car-detail 2.2s ease both;
+  }
+}
+@keyframes trace-car-detail {
+  0% { opacity: 0; stroke-dashoffset: 1; }
+  12% { opacity: 1; }
+  58%, 72% { opacity: 1; stroke-dashoffset: 0; }
+  100% { opacity: 0; stroke-dashoffset: 0; }
+}
 #escapamento .build-image img { object-position: center 68%; }
 .build-visual video { object-fit: contain; }
 .build-visual figcaption { padding-top: 10px; color: var(--muted); font-size: .85rem; }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .build-image { view-timeline-name: --chapter; }
-    .build-image img { animation: chapter-camera linear both; animation-timeline: --chapter; animation-range: entry 0% cover 52%; }
+    .build-image :is(img, .detail-photo) { animation: chapter-camera linear both; animation-timeline: --chapter; animation-range: entry 0% cover 52%; }
     @keyframes chapter-camera { from { transform: scale(1.1); } to { transform: scale(1); } }
   }
 }
@@ -219,7 +242,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline
 @media (orientation: landscape) and (max-height: 500px) {
   .drive { min-height: 0; }
   .drive-stage { position: relative; top: auto; min-height: 300px; }
-  .drive-heading { padding-top: 18px; }
+  .drive-heading { top: 22%; transform: translateY(-38%); }
   .drive-heading h1 { font-size: min(13vw, 18svh); }
   .car-frame {
     top: 49%;
@@ -229,3 +252,22 @@ a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline
   .drive-caption { padding-block: 6px; }
   .drive-progress { display: none; }
 }
+
+.cold-start { margin-top: 24px; }
+.cold-start-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding-inline: 16px;
+  border: 1px solid #5bd8ff80;
+  border-radius: 999px;
+  background: #0b1c29;
+  color: var(--accent);
+  cursor: pointer;
+  font: 700 .8rem var(--mono);
+  text-shadow: none;
+}
+.cold-start-button:hover { background: #133044; border-color: var(--accent); }
+.cold-start-error { display: block; margin-top: 10px; color: var(--white); font-size: .85rem; }
+

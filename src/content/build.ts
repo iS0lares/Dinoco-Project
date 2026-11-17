@@ -1,5 +1,7 @@
+import type { HighlightedPart } from '../components/DetailPhoto';
+
 type Modification = {
-  id: string;
+  id: HighlightedPart;
   title: string;
   description: string;
   date?: string;

@@ -1,6 +1,9 @@
-import Image from 'next/image';
+import { ColdStart } from '../components/ColdStart';
+import { DetailPhoto } from '../components/DetailPhoto';
 import { DinocoLoop } from '../components/DinocoLoop';
 import { Dinoco } from '../components/Dinoco';
+import { DinocoCard } from '../components/DinocoCard';
+import { RideHeight } from '../components/RideHeight';
 import { modifications } from '../content/build';
 
 export default function Home() {
@@ -22,18 +25,27 @@ export default function Home() {
             <div className="build-story">
               {modifications.map(item => {
                 const photo = item.photo;
+                if (item.id === 'suspensao' && photo) {
+                  return <RideHeight key={item.id} title={item.title} description={item.description} photo={photo} />;
+                }
+
                 return (
                   <article className="build-chapter" key={item.id} id={item.id} aria-labelledby={item.id + '-title'}>
                     <header className="build-copy">
                       <h3 id={item.id + '-title'}>{item.title}</h3>
                       <p>{item.description}</p>
+                      {item.id === 'escapamento' && <ColdStart />}
                       {item.date && <time>{item.date}</time>}
                     </header>
                     {(photo || item.video) && (
                       <figure className="build-visual">
                         {item.video
                           ? <video src={item.video} poster={photo} controls playsInline preload="metadata" aria-label={item.title + ' no Dinoco'} />
-                          : photo && <div className="build-image"><Image src={photo} alt={item.title + ' no Dinoco'} fill unoptimized /></div>}
+                          : photo && (
+                            <div className="build-image">
+                              <DetailPhoto part={item.id} src={photo} label={item.title + ' no Dinoco'} />
+                            </div>
+                          )}
                       </figure>
                     )}
                   </article>
@@ -42,6 +54,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+        <DinocoCard />
       </main>
       <footer className="wrap garage-footer"><span>Dinoco / Moisés Solares</span><a href="#inicio">Voltar ao topo ↑</a></footer>
     </>

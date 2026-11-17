@@ -1,0 +1,26 @@
+.control {
+  margin-top: 18px;
+  padding: 11px 18px;
+  border: 1px solid #538095;
+  border-radius: 100px;
+  background: #173747;
+  color: #f2fbff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.control:focus-visible { outline: 2px solid #9bdff6; outline-offset: 3px; }
+
+p.status { margin-top: 9px; font-size: .85rem; }
+
+.body {
+  transition: transform 640ms cubic-bezier(.45, 0, .25, 1);
+}
+
+.body[data-raised="true"] {
+  transform: translateY(-9px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .body { transition: none; }
+}
